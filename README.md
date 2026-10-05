@@ -66,6 +66,9 @@ Make sure that your plugin does not directly interact with the game servers in a
 
 We feel like that this offers developers the __freedom to improve the game's functionality__ in ways that SE can't, while officially disallowing plugins that can give __unfair advantages over players on other platforms__.
 
+## AI/LLM-authored Contributions
+Dalamud and XIVLauncher do not accept contributions made using generative AI. We kindly ask that you do not interact with this repository using automated systems driven by LLMs/AI tools.
+
 <br>
 <br>
 
