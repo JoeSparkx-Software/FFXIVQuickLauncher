@@ -64,8 +64,8 @@ namespace XIVLauncher.Windows
             if (App.Settings.PatchPath != null)
                 ViewModel.PatchPath = App.Settings.PatchPath.FullName;
 
-            LanguageComboBox.SelectedIndex = (int) App.Settings.Language.GetValueOrDefault(ClientLanguage.English);
-            LauncherLanguageComboBox.SelectedIndex = (int) App.Settings.LauncherLanguage.GetValueOrDefault(LauncherLanguage.English);
+            LanguageComboBox.SelectedIndex = (int)App.Settings.Language.GetValueOrDefault(ClientLanguage.English);
+            LauncherLanguageComboBox.SelectedIndex = (int)App.Settings.LauncherLanguage.GetValueOrDefault(LauncherLanguage.English);
             LauncherLanguageNoticeTextBlock.Visibility = Visibility.Hidden;
             AddonListView.ItemsSource = App.Settings.AddonList ??= new List<AddonEntry>();
             AskBeforePatchingCheckBox.IsChecked = App.Settings.AskBeforePatchInstall;
@@ -85,11 +85,11 @@ namespace XIVLauncher.Windows
 
             LaunchArgsTextBox.Text = App.Settings.AdditionalLaunchArgs;
 
-            DpiAwarenessComboBox.SelectedIndex = (int) App.Settings.DpiAwareness.GetValueOrDefault(DpiAwareness.Unaware);
+            DpiAwarenessComboBox.SelectedIndex = (int)App.Settings.DpiAwareness.GetValueOrDefault(DpiAwareness.Unaware);
 
             VersionLabel.Text += " - v" + AppUtil.GetAssemblyVersion() + " - " + AppUtil.GetGitHash() + " - " + Environment.Version;
 
-            var val = (decimal) App.Settings.SpeedLimitBytes / MathHelpers.BYTES_TO_MB;
+            var val = (decimal)App.Settings.SpeedLimitBytes / MathHelpers.BYTES_TO_MB;
 
             this.SpeedLimitSpinBox.Value = (double)val;
 
@@ -103,13 +103,13 @@ namespace XIVLauncher.Windows
             { Content = ViewModel.ManualOtpProviderLoc, Tag = null, };
 
             OtpProviderComboBox.Items.Add(manualItem); foreach (var provider in App.OtpProviderManager.Providers)
-            {  OtpProviderComboBox.Items.Add(new ComboBoxItem  { Content = provider.DisplayName, Tag = provider.Id,}); }
+            { OtpProviderComboBox.Items.Add(new ComboBoxItem { Content = provider.DisplayName, Tag = provider.Id, }); }
 
             OtpProviderComboBox.SelectedItem = manualItem; if (string.IsNullOrEmpty(App.Settings.OtpProviderId)) return;
 
             foreach (ComboBoxItem item in OtpProviderComboBox.Items)
             {
-                if (item.Tag is string providerId && string.Equals( providerId, App.Settings.OtpProviderId, StringComparison.OrdinalIgnoreCase))
+                if (item.Tag is string providerId && string.Equals(providerId, App.Settings.OtpProviderId, StringComparison.OrdinalIgnoreCase))
                 { OtpProviderComboBox.SelectedItem = item; break; }
             }
         }
@@ -147,7 +147,7 @@ namespace XIVLauncher.Windows
 
             App.Settings.AdditionalLaunchArgs = LaunchArgsTextBox.Text;
 
-            App.Settings.DpiAwareness = (DpiAwareness) DpiAwarenessComboBox.SelectedIndex;
+            App.Settings.DpiAwareness = (DpiAwareness)DpiAwarenessComboBox.SelectedIndex;
 
             SettingsDismissed?.Invoke(this, null);
 
@@ -187,7 +187,8 @@ namespace XIVLauncher.Windows
             var addonSetup = new GenericAddonSetupWindow();
             addonSetup.ShowDialog();
 
-            if (addonSetup.Result != null && !string.IsNullOrEmpty(addonSetup.Result.Path)) {
+            if (addonSetup.Result != null && !string.IsNullOrEmpty(addonSetup.Result.Path))
+            {
                 var addonList = App.Settings.AddonList;
 
                 addonList.Add(new AddonEntry
@@ -235,7 +236,7 @@ namespace XIVLauncher.Windows
 
         private void ToggleButton_OnChecked(object sender, RoutedEventArgs e)
         {
-            App.Settings.AddonList = (List<AddonEntry>) AddonListView.ItemsSource;
+            App.Settings.AddonList = (List<AddonEntry>)AddonListView.ItemsSource;
         }
 
         private void RemoveAddonEntry_OnClick(object sender, RoutedEventArgs e)

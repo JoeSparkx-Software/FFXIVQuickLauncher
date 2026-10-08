@@ -201,10 +201,11 @@ namespace XIVLauncher.Windows.ViewModel
                 var result = await App.OtpProviderManager.GetOtpAsync(providerId).ConfigureAwait(false); if (result.Success)
                 {
                     if (AccountManager.CurrentAccount == null || AccountManager.CurrentAccount.LastSuccessfulOtp != result.Otp)
-                    { return result.Otp; } Log.Warning( "OTP provider {ProviderId} returned the previously used OTP.", providerId);
+                    { return result.Otp; }
+                    Log.Warning("OTP provider {ProviderId} returned the previously used OTP.", providerId);
                 }
                 else
-                { Log.Warning( "OTP provider {ProviderId} failed. Falling back to manual OTP entry.", providerId); }
+                { Log.Warning("OTP provider {ProviderId} failed. Falling back to manual OTP entry.", providerId); }
             }
 
             return OtpInputDialog.AskForOtp((otpDialog, result) =>
@@ -212,7 +213,7 @@ namespace XIVLauncher.Windows.ViewModel
                 if (AccountManager.CurrentAccount != null &&
                     result != null && AccountManager.CurrentAccount.LastSuccessfulOtp == result)
                 {
-                    otpDialog.IgnoreCurrentResult( Loc.Localize( "DuplicateOtpAfterSuccess", "This OTP has been already used.\nIt may take up to 30 seconds for a new one."));
+                    otpDialog.IgnoreCurrentResult(Loc.Localize("DuplicateOtpAfterSuccess", "This OTP has been already used.\nIt may take up to 30 seconds for a new one."));
                 }
             }, _window);
         }

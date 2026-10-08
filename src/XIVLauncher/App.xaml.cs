@@ -178,7 +178,7 @@ namespace XIVLauncher
             var providerDirectory = OtpProviderPaths.EnsureProviderDirectoryExists();
             var providers = OtpProviderLoader.LoadProviders(providerDirectory);
             OtpProviderManager = new OtpProviderManager(providers);
-            Log.Information( "Loaded {ProviderCount} OTP provider(s)", OtpProviderManager.Providers.Count);
+            Log.Information("Loaded {ProviderCount} OTP provider(s)", OtpProviderManager.Providers.Count);
         }
 
         private void SetupHttpClient()

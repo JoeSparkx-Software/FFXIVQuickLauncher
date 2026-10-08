@@ -43,7 +43,7 @@ namespace XIVLauncher.OtpProviders
                 // partial load failure ala missing deps. log and skip.
                 Log.Warning(ex, "Could not load OTP provider assembly {ProviderAssembly}", Path.GetFileName(dllPath));
             }
-            
+
             catch (Exception ex)
             {
                 // total load failure. log and skip
