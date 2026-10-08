@@ -5,12 +5,10 @@ using System.Threading;
 using System.Threading.Tasks;
 using Serilog;
 
-
 namespace XIVLauncher.OtpProviders
 {
     // handles OTP provider loading and execution. 
-    // strictly validates 6-digit codes only. 
-    // all failures are logged and returned as errors; nothing crashes XL
+    // all failures are logged and return null so xl can fall back to manual otp entry
     public sealed class OtpProviderManager
     {
         private readonly IReadOnlyList<IOtpProvider> providers;
@@ -31,46 +29,41 @@ namespace XIVLauncher.OtpProviders
             return providers.FirstOrDefault(provider => string.Equals(provider.Id, providerId, StringComparison.OrdinalIgnoreCase));
         }
 
-        public async Task<OtpProviderResult> GetOtpAsync(
+        public async Task<string?> GetOtpAsync(
             string providerId,
+            string username,
             CancellationToken cancellationToken = default)
         {
             var provider = GetProvider(providerId);
 
             if (provider == null)
             {
-                return new OtpProviderResult
-                { Success = false, ErrorMessage = "OTP provider not found.", };
+                Log.Warning("OTP provider {ProviderId} was not found.", providerId);
+                return null;
             }
 
             try
             {
-                var result = await provider.GetOtpAsync(cancellationToken);
+                var otp = await provider.GetOtpAsync(username, cancellationToken).ConfigureAwait(false);
 
-                if (result == null)
-                {
-                    return new OtpProviderResult { Success = false, ErrorMessage = "OTP provider returned no result.", };
-                }
+                if (otp == null)
+                    return null;
 
-                if (!result.Success) return result;
-                // strict 6-digit numeric check. no exceptions.
-                if (string.IsNullOrWhiteSpace(result.Otp) || result.Otp.Length != 6 || !result.Otp.All(char.IsDigit))
+                if (!otp.All(char.IsDigit))
                 {
                     Log.Warning("OTP provider {ProviderId} returned an invalid OTP.", provider.Id);
-                    return new OtpProviderResult { Success = false, ErrorMessage = "OTP provider returned an invalid code.", };
+                    return null;
                 }
-                return result;
+                return otp;
             }
             catch (OperationCanceledException)
-            // catch everything. log it. fail safe.
             {
-                return new OtpProviderResult { Success = false, ErrorMessage = "OTP request was cancelled.", };
+                return null;
             }
             catch (Exception ex)
-            // if no otp provier found, it logs it and comes back as a failure instead of crashing XL.
             {
                 Log.Warning(ex, "OTP provider {ProviderId} failed.", provider.Id);
-                return new OtpProviderResult { Success = false, ErrorMessage = "OTP provider failed.", };
+                return null;
             }
         }
     }

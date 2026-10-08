@@ -65,7 +65,7 @@
 
                     <StackPanel Margin="0,10,0,0">
                     <TextBlock HorizontalAlignment="Left" Foreground="{DynamicResource MaterialDesignBody}" Text="{Binding OtpProviderLoc}" />
-                    <ComboBox x:Name="OtpProviderComboBox" Width="300" Margin="0,3,0,0" HorizontalAlignment="Left" Foreground="{DynamicResource MaterialDesignBody}" />
+                    <ComboBox x:Name="OtpProviderComboBox" Width="300" Margin="0,3,0,0" HorizontalAlignment="Left" Foreground="{DynamicResource MaterialDesignBody}" ToolTip="{Binding OtpProviderTooltipLoc}" />
                     </StackPanel>
 
                     <Button HorizontalAlignment="Left" 
