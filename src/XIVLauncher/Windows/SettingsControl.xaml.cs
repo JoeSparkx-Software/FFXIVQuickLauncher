@@ -18,6 +18,7 @@ using XIVLauncher.Common.Dalamud;
 using XIVLauncher.Common.Util;
 using XIVLauncher.Support;
 using XIVLauncher.Windows.ViewModel;
+using XIVLauncher.OtpProviders;
 
 namespace XIVLauncher.Windows
 {
@@ -80,6 +81,8 @@ namespace XIVLauncher.Windows
 
             OtpAlwaysOnTopCheckBox.IsChecked = App.Settings.OtpAlwaysOnTopEnabled;
 
+            ReloadOtpProviders();
+
             LaunchArgsTextBox.Text = App.Settings.AdditionalLaunchArgs;
 
             DpiAwarenessComboBox.SelectedIndex = (int) App.Settings.DpiAwareness.GetValueOrDefault(DpiAwareness.Unaware);
@@ -91,6 +94,24 @@ namespace XIVLauncher.Windows
             this.SpeedLimitSpinBox.Value = (double)val;
 
             IsFreeTrialCheckbox.IsChecked = App.Settings.IsFt;
+        }
+
+        private void ReloadOtpProviders()
+        {
+            OtpProviderComboBox.Items.Clear();
+            var manualItem = new ComboBoxItem
+            { Content = ViewModel.ManualOtpProviderLoc, Tag = null, };
+
+            OtpProviderComboBox.Items.Add(manualItem); foreach (var provider in App.OtpProviderManager.Providers)
+            {  OtpProviderComboBox.Items.Add(new ComboBoxItem  { Content = provider.DisplayName, Tag = provider.Id,}); }
+
+            OtpProviderComboBox.SelectedItem = manualItem; if (string.IsNullOrEmpty(App.Settings.OtpProviderId)) return;
+
+            foreach (ComboBoxItem item in OtpProviderComboBox.Items)
+            {
+                if (item.Tag is string providerId && string.Equals( providerId, App.Settings.OtpProviderId, StringComparison.OrdinalIgnoreCase))
+                { OtpProviderComboBox.SelectedItem = item; break; }
+            }
         }
 
         private void AcceptButton_Click(object sender, RoutedEventArgs e)
@@ -121,6 +142,8 @@ namespace XIVLauncher.Windows
             App.Settings.OtpServerEnabled = OtpServerCheckBox.IsChecked == true;
 
             App.Settings.OtpAlwaysOnTopEnabled = OtpAlwaysOnTopCheckBox.IsChecked == true;
+
+            App.Settings.OtpProviderId = (OtpProviderComboBox.SelectedItem as ComboBoxItem)?.Tag as string;
 
             App.Settings.AdditionalLaunchArgs = LaunchArgsTextBox.Text;
 
@@ -445,6 +468,13 @@ namespace XIVLauncher.Windows
         private void LearnMoreButton_OnClick(object sender, RoutedEventArgs e)
         {
             PlatformHelpers.OpenBrowser("https://goatcorp.github.io/faq/mobile_otp");
+        }
+
+        private void OpenOtpProviderFolder_OnClick(object sender, RoutedEventArgs e)
+        {
+            var providerDirectory = OtpProviderPaths.EnsureProviderDirectoryExists();
+
+            Process.Start(new ProcessStartInfo { FileName = providerDirectory, UseShellExecute = true, });
         }
 
         private void IsFreeTrialCheckbox_OnClick(object sender, RoutedEventArgs e)
