@@ -36,14 +36,14 @@ namespace XIVLauncher.OtpProviders
             {
                 var fullPath = Path.GetFullPath(dllPath);
                 var assembly = AssemblyLoadContext.Default.LoadFromAssemblyPath(fullPath);
-                // use AssemblyLoadContext to avoid locking files. 
                 foreach (var providerType in GetProviderTypes(assembly)) TryAddProvider(providerType, assembly, providers);
             }
             catch (ReflectionTypeLoadException ex)
             {
+                // partial load failure ala missing deps. log and skip.
                 Log.Warning(ex, "Could not load OTP provider assembly {ProviderAssembly}", Path.GetFileName(dllPath));
             }
-            // partial load failure ala missing deps. log and skip.
+            
             catch (Exception ex)
             {
                 // total load failure. log and skip
